@@ -1,0 +1,17 @@
+[
+  {
+    "path": "README.md (repository home page on GitHub; before = main, after = branch feat/SL-1428-N_38Tzo6XS)",
+    "live_url": "https://github.com/lukasz-starosta/promptscout-plugins",
+    "behind_login": false
+  },
+  {
+    "path": "Claude Code /plugin panel (before = /plugin marketplace add on main; after = /plugin > Installed > PromptScout from this branch)",
+    "live_url": "https://github.com/lukasz-starosta/promptscout-plugins",
+    "behind_login": false
+  },
+  {
+    "path": "Claude Code /plugin > Installed list (after only: the plugin plus its promptscout server waiting for sign-in)",
+    "live_url": "https://github.com/lukasz-starosta/promptscout-plugins",
+    "behind_login": false
+  }
+]
