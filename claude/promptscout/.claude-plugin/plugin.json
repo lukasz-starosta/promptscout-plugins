@@ -1,0 +1,26 @@
+{
+  "name": "promptscout",
+  "displayName": "PromptScout",
+  "version": "0.1.0",
+  "description": "Check your brand's AI visibility, act on Opportunities and draft content briefs with your PromptScout account.",
+  "author": {
+    "name": "PromptScout",
+    "url": "https://www.promptscout.app"
+  },
+  "homepage": "https://www.promptscout.app",
+  "repository": "https://github.com/lukasz-starosta/promptscout-plugins",
+  "license": "MIT",
+  "keywords": [
+    "promptscout",
+    "ai-visibility",
+    "share-of-voice",
+    "seo",
+    "content-briefs",
+    "geo"
+  ],
+  "icon": "./assets/icon.png",
+  "supportUrl": "https://www.promptscout.app/contact",
+  "privacyPolicyUrl": "https://www.promptscout.app/privacy",
+  "termsOfServiceUrl": "https://www.promptscout.app/terms",
+  "documentationUrl": "https://github.com/lukasz-starosta/promptscout-plugins#readme"
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "promptscout": {
+      "type": "http",
+      "url": "https://mcp.promptscout.app/mcp"
+    }
+  }
+}
