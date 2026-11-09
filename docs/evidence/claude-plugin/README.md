@@ -6,8 +6,9 @@ answers) and [pages.json](pages.json).
 
 ## README on GitHub
 
-Before is `main` (the public repository today). After is branch `feat/SL-1428-N_38Tzo6XS`. Both
-are full-page captures of github.com taken on 2026-11-09.
+Before is `main` (the public repository today). After is branch `feat/SL-1428-N_38Tzo6XS` at
+commit `e6e44fa`, which shows the MCP beta line and the tagged support links. Both are full-page
+captures of github.com taken on 2026-11-09.
 
 ### Before (main)
 
