@@ -28,9 +28,16 @@ those account-inspection tools.
 
 ### Without the plugin (4 turns)
 
-Claude searched the plugin catalog and the MCP registry. It showed an install card for three
-third-party AI-visibility plugins from Anthropic's directory (Searcherries, Rankability,
-UnifAPI), then answered:
+- **Date:** 2026-11-09, 12:11 UTC
+- **Model:** `claude-opus-5-5` in Claude Code 2.1.319, headless, no PromptScout plugin installed
+- **Exact question:** `How visible is my brand in AI answers?`
+- **Source of the plugin names:** Claude's own tool calls in this run. It searched Anthropic's
+  plugin directory (`SearchPlugins`) and the MCP registry (`SearchMcpRegistry`), then showed an
+  install card (`SuggestPluginInstall`) for three third-party AI-visibility plugins, named
+  exactly as the card listed them: Searcherries, Rankability, UnifAPI. This records what
+  Claude showed on that date. It is not PromptScout's claim about those products.
+
+Claude then answered:
 
 > I can't measure that yet. Nothing in this session can query ChatGPT, Perplexity, Gemini or Google AI Overviews and log which brands they mention. Each of the plugins above can, and if you install one I'll run a proper audit with it.
 >
@@ -46,6 +53,9 @@ UnifAPI), then answered:
 > This check gives you directional findings and a list of gaps, not scores. For share-of-voice numbers across several AI engines, use one of the plugins.
 
 ### With the plugin, before sign-in (1 turn, no tool calls)
+
+2026-11-09, 12:11 UTC · `claude-opus-5-5` in Claude Code 2.1.319 · exact question:
+`How visible is my brand in AI answers?`
 
 > I can't check that yet. Your brand's AI visibility data comes from PromptScout, and its connection isn't authorized in this session, so I have no access to your mention rates, share of voice or cited sources.
 >
@@ -100,6 +110,9 @@ description: Check how visible a brand is in AI answers with PromptScout. Use fo
 
 ### Before (run 2 of 3; in a Claude Code session, it points to the wrong place)
 
+2026-11-09, 13:08 UTC · `claude-opus-5-5` in Claude Code 2.1.319 · exact question:
+`How visible is my brand in AI answers?`
+
 > I can't check that yet. Your brand's AI visibility data comes from PromptScout, and its connection in this session isn't authorized, so I can't read your mention rates, share of voice or cited sources.
 >
 > To fix it, open your claude.ai connector settings and authorize the **PromptScout** connector (I can't start the sign-in from here). Then ask again and I'll pull:
@@ -110,6 +123,9 @@ description: Check how visible a brand is in AI answers with PromptScout. Use fo
 > - **Opportunities:** specific actions that would raise your visibility
 
 ### After (run 1 of 3; the skill loaded)
+
+2026-11-09, 13:08 UTC · `claude-opus-5-5` in Claude Code 2.1.319 · exact question:
+`How visible is my brand in AI answers?`
 
 > I can't check this yet because PromptScout isn't signed in for this session, so I can't read any of your brand's visibility data.
 >
