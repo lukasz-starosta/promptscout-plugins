@@ -25,6 +25,7 @@ workflows (skills):
 
 You need a PromptScout account. The plugin connects to PromptScout's hosted MCP server at
 `https://mcp.promptscout.app/mcp`, and you sign in to PromptScout the first time Claude uses it.
+PromptScout MCP is in beta; if your sign-in shows no brand to approve, [contact us](https://www.promptscout.app/contact?utm_source=claude-plugin&utm_medium=github-readme&utm_campaign=claude-plugin).
 
 ### Install in Claude Code
 

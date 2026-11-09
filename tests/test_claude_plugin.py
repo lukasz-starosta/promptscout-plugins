@@ -268,8 +268,8 @@ class PublishedTextTests(unittest.TestCase):
             r"&utm_medium=(github-readme|plugin-readme|skill)&utm_campaign=claude-plugin"
         )
         files = {
-            ROOT / "README.md": 2,
-            PLUGIN / "README.md": 2,
+            ROOT / "README.md": 3,
+            PLUGIN / "README.md": 3,
             SKILLS / "checking-ai-visibility" / "SKILL.md": 1,
         }
         for path, expected in files.items():
@@ -278,6 +278,18 @@ class PublishedTextTests(unittest.TestCase):
             # Home and contact links in these files are all tagged; privacy links stay plain.
             plain = re.findall(r"https://www\.promptscout\.app(?:/contact)?/?(?=[\s).,]|$)", text)
             self.assertFalse(plain, f"{path}: untagged home/contact link {plain}")
+
+    def test_readmes_keep_the_mcp_beta_line(self):
+        # Both READMEs tell visitors MCP is in beta and link the tagged contact form.
+        for path, medium in ((ROOT / "README.md", "github-readme"), (PLUGIN / "README.md", "plugin-readme")):
+            prose = " ".join(read(path).split())
+            self.assertIn(
+                "PromptScout MCP is in beta; if your sign-in shows no brand to approve, "
+                "[contact us](https://www.promptscout.app/contact?utm_source=claude-plugin"
+                f"&utm_medium={medium}&utm_campaign=claude-plugin).",
+                prose,
+                path,
+            )
 
     def test_license_is_mit_with_trademark_note(self):
         for path in (ROOT / "LICENSE", PLUGIN / "LICENSE"):

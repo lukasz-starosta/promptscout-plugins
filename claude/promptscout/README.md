@@ -19,6 +19,7 @@ You need a PromptScout account. The plugin connects to PromptScout's hosted MCP 
 `https://mcp.promptscout.app/mcp`. Sign in to PromptScout the first time Claude uses it: in
 Claude Code run `/mcp` and select `plugin:promptscout:promptscout`; on claude.ai connect it on
 the plugin's **Connectors** tab under **Customize > Plugins**.
+PromptScout MCP is in beta; if your sign-in shows no brand to approve, [contact us](https://www.promptscout.app/contact?utm_source=claude-plugin&utm_medium=plugin-readme&utm_campaign=claude-plugin).
 
 Install it from the marketplace in https://github.com/lukasz-starosta/promptscout-plugins:
 
