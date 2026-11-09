@@ -71,7 +71,7 @@ PromptScout handles your data under its privacy policy: https://www.promptscout.
 
 ## Support
 
-Visit https://www.promptscout.app or use the contact form at https://www.promptscout.app/contact.
+Visit [www.promptscout.app](https://www.promptscout.app/?utm_source=claude-plugin&utm_medium=github-readme&utm_campaign=claude-plugin) or use the [contact form](https://www.promptscout.app/contact?utm_source=claude-plugin&utm_medium=github-readme&utm_campaign=claude-plugin).
 
 ## For maintainers
 

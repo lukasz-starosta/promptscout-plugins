@@ -37,7 +37,7 @@ https://www.promptscout.app/privacy.
 
 ## Support
 
-https://www.promptscout.app (contact form at https://www.promptscout.app/contact).
+[www.promptscout.app](https://www.promptscout.app/?utm_source=claude-plugin&utm_medium=plugin-readme&utm_campaign=claude-plugin) ([contact form](https://www.promptscout.app/contact?utm_source=claude-plugin&utm_medium=plugin-readme&utm_campaign=claude-plugin)).
 
 ## License
 

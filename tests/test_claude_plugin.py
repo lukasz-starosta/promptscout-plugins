@@ -261,6 +261,24 @@ class PublishedTextTests(unittest.TestCase):
         ):
             self.assertIn(needle, text)
 
+    def test_promptscout_links_are_tagged_for_counting(self):
+        # Visits from the plugin's README and skill links are counted in PostHog by utm_source.
+        tagged = re.compile(
+            r"https://www\.promptscout\.app/(contact)?\?utm_source=claude-plugin"
+            r"&utm_medium=(github-readme|plugin-readme|skill)&utm_campaign=claude-plugin"
+        )
+        files = {
+            ROOT / "README.md": 2,
+            PLUGIN / "README.md": 2,
+            SKILLS / "checking-ai-visibility" / "SKILL.md": 1,
+        }
+        for path, expected in files.items():
+            text = read(path)
+            self.assertEqual(len(tagged.findall(text)), expected, path)
+            # Home and contact links in these files are all tagged; privacy links stay plain.
+            plain = re.findall(r"https://www\.promptscout\.app(?:/contact)?/?(?=[\s).,]|$)", text)
+            self.assertFalse(plain, f"{path}: untagged home/contact link {plain}")
+
     def test_license_is_mit_with_trademark_note(self):
         for path in (ROOT / "LICENSE", PLUGIN / "LICENSE"):
             text = read(path)

@@ -33,7 +33,7 @@ Connectors tab. Do not continue until the tools work.
 
 1. **Pick the brand.** Call `mcp__plugin_promptscout_promptscout__promptscout_list_brands`.
    - No brands: say the account has not granted any brand to Claude yet, and that the user can
-     sign in again and grant one, or add a brand at https://www.promptscout.app. Stop there.
+     sign in again and grant one, or add a brand at [www.promptscout.app](https://www.promptscout.app/?utm_source=claude-plugin&utm_medium=skill&utm_campaign=claude-plugin). Stop there.
    - One brand: use it and name it in your answer.
    - Several brands: list them by name and ask which one to check, unless the user already named
      one.
