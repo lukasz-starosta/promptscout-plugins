@@ -31,11 +31,10 @@ those account-inspection tools.
 - **Date:** 2026-11-09, 12:11 UTC
 - **Model:** `claude-opus-5-5` in Claude Code 2.1.319, headless, no PromptScout plugin installed
 - **Exact question:** `How visible is my brand in AI answers?`
-- **Source of the plugin names:** Claude's own tool calls in this run. It searched Anthropic's
-  plugin directory (`SearchPlugins`) and the MCP registry (`SearchMcpRegistry`), then showed an
-  install card (`SuggestPluginInstall`) for three third-party AI-visibility plugins, named
-  exactly as the card listed them: Searcherries, Rankability, UnifAPI. This records what
-  Claude showed on that date. It is not PromptScout's claim about those products.
+- **Source:** Claude's own tool calls in this run. It searched Anthropic's plugin directory
+  (`SearchPlugins`) and the MCP registry (`SearchMcpRegistry`), then showed an install card
+  (`SuggestPluginInstall`) for three third-party AI-visibility plugins. This records what Claude
+  showed on that date. It is not PromptScout's claim about those products.
 
 Claude then answered:
 

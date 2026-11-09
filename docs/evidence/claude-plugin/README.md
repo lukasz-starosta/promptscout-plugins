@@ -72,5 +72,4 @@ client registration and no form submission.
 | - | - | - |
 | [![signin-page-1440.png](signin-page-1440.png)](signin-page-1440.png) | [![signin-page-390.png](signin-page-390.png)](signin-page-390.png) | [![signup-page-1440.png](signup-page-1440.png)](signup-page-1440.png) |
 
-This folder is evidence for the founder's decision and is not part of the plugin. It can be
-deleted before or after merge without affecting the plugin.
+This folder is evidence for the founder's decision and is not part of the plugin.
