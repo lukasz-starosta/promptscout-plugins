@@ -63,25 +63,73 @@ UnifAPI), then answered:
 - With the plugin installed but not signed in, Claude routes the question to PromptScout and
   says what it will return. It does not invent numbers, and it does not suggest other vendors.
 - **Gap:** this run did not load the `checking-ai-visibility` skill (no Skill call), so the
-  answer omits the skill's exact sign-in path (`/mcp` → `plugin:promptscout:promptscout`). This
-  is a headless run, where interactive OAuth is impossible anyway. The founder's run below
-  should check whether the skill loads in an interactive session.
+  answer omits the skill's exact sign-in path. Example 2 fixes this with a change to the skill's
+  description.
 
-## Not yet covered: a run on live PromptScout data
+## Example 2: skill description, before and after (signed out)
 
-A signed-in run needs an OAuth sign-in to a PromptScout account. The task's constraints rule
-that out for this session ("Do not sign in to PromptScout … the founder does every manual
-step"), so no answer on live data exists yet. To produce it, the founder (or a session given a
-test account) runs:
+**Question:** does the `checking-ai-visibility` skill load for "How visible is my brand in AI
+answers?" when PromptScout is not signed in?
 
-1. `/plugin marketplace add lukasz-starosta/promptscout-plugins`, then
-   `/plugin install promptscout@promptscout` and `/reload-plugins`.
-2. `/mcp` → `plugin:promptscout:promptscout` → authenticate, and grant one brand.
-3. Ask `How visible is my brand in AI answers?` and paste the answer here under "With the
-   plugin, signed in".
-4. `/plugin` → disable PromptScout, start a new session, ask the same question, and paste the
-   answer under "Without the plugin, same account".
+**Method:** 3 runs per version. Each run uses the with-plugin config above (plugin loaded in
+place from the checkout, server `needs-auth`), Claude Code 2.1.319, `claude-opus-5-5`:
 
-**Pass:** the signed-in answer leads with share of voice and rank for the stated period. It
-lists competitors and cited sources with links. Each AI claim names the engine, the date and
-the source link, with High/Medium/Low confidence, and the answer says what was not checked.
+```bash
+claude -p "How visible is my brand in AI answers?" --output-format stream-json --verbose --max-turns 4
+```
+
+A run counts as loaded when the stream has a `Skill` tool call for
+`promptscout:checking-ai-visibility`.
+
+| Description | Skill loaded | Answer gives the exact Claude Code sign-in path |
+| :- | :- | :- |
+| Before (commit c073715) | 0 of 3 (no tool calls, 1 turn) | 1 of 3. The others say "authorize the PromptScout plugin outside this session" or "open your claude.ai connector settings" |
+| After (this commit) | 3 of 3 (`Skill` → `promptscout:checking-ai-visibility`, 3 turns) | 3 of 3 (`/mcp` → `plugin:promptscout:promptscout`, plus the claude.ai Connectors tab) |
+
+**Before:**
+
+```yaml
+description: Check how visible a brand is in AI answers with PromptScout. Use when the user asks how often AI assistants such as ChatGPT, Perplexity, Gemini or Claude mention their brand, how they compare with competitors, what their share of voice is, or which sources and threads AI answers cite.
+```
+
+**After:**
+
+```yaml
+description: Check how visible a brand is in AI answers with PromptScout. Use for questions like "How visible is my brand in AI answers?", how often ChatGPT, Perplexity, Gemini or Claude mention the user's brand, how it compares with competitors, its share of voice, or which sources and threads AI answers cite. Load it before answering even when the PromptScout server is not connected or needs sign-in, because it gives the exact sign-in steps.
+```
+
+### Before (run 2 of 3; in a Claude Code session, it points to the wrong place)
+
+> I can't check that yet. Your brand's AI visibility data comes from PromptScout, and its connection in this session isn't authorized, so I can't read your mention rates, share of voice or cited sources.
+>
+> To fix it, open your claude.ai connector settings and authorize the **PromptScout** connector (I can't start the sign-in from here). Then ask again and I'll pull:
+>
+> - **Mention rate:** how often ChatGPT, Perplexity, Gemini and Claude mention your brand for the prompts you track
+> - **Share of voice:** how you compare with your competitors
+> - **Sources:** which pages and threads AI answers cite when they bring you up
+> - **Opportunities:** specific actions that would raise your visibility
+
+### After (run 1 of 3; the skill loaded)
+
+> I can't check this yet because PromptScout isn't signed in for this session, so I can't read any of your brand's visibility data.
+>
+> **To connect it:**
+> - **Claude Code:** run `/mcp`, select `plugin:promptscout:promptscout`, and follow the sign-in steps.
+> - **claude.ai:** go to **Customize → Plugins**, open the PromptScout plugin, and connect it on its **Connectors** tab.
+>
+> When you're signed in, ask me again and I'll get:
+> - **Share of voice:** how often ChatGPT, Perplexity, Gemini and Claude mention your brand, and for what period.
+> - **Competitor rankings:** a table of your brand next to competitors, with changes since the previous period.
+> - **Cited sources:** the pages AI answers link to most, and whether each one mentions your brand.
+>
+> I'll also say how confident the numbers are and what PromptScout doesn't track for your brand.
+
+## Signed-in runs: the founder's test after merge
+
+Decision by the founder (2026-11-09, answered through Symphony): "I will do the manual stuff
+myself." The signed-in steps happen after merge, and this session does not sign in to
+PromptScout or claude.ai. Two signed-in checks remain. Their exact steps and pass conditions are
+in the PR's "Founder's test after merge" section:
+
+1. A live-data run of "How visible is my brand in AI answers?" in Claude Code.
+2. The claude.ai **Customize > Plugins** view, showing the PromptScout entry with its icon.

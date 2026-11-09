@@ -1,6 +1,6 @@
 ---
 name: checking-ai-visibility
-description: Check how visible a brand is in AI answers with PromptScout. Use when the user asks how often AI assistants such as ChatGPT, Perplexity, Gemini or Claude mention their brand, how they compare with competitors, what their share of voice is, or which sources and threads AI answers cite.
+description: Check how visible a brand is in AI answers with PromptScout. Use for questions like "How visible is my brand in AI answers?", how often ChatGPT, Perplexity, Gemini or Claude mention the user's brand, how it compares with competitors, its share of voice, or which sources and threads AI answers cite. Load it before answering even when the PromptScout server is not connected or needs sign-in, because it gives the exact sign-in steps.
 ---
 
 # Checking AI visibility
