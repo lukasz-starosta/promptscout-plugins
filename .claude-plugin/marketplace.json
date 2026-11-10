@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "promptscout",
+  "description": "PromptScout plugins for Claude: check your brand's AI visibility, act on Opportunities and draft content briefs.",
+  "owner": {
+    "name": "PromptScout",
+    "url": "https://www.promptscout.app"
+  },
+  "plugins": [
+    {
+      "name": "promptscout",
+      "source": "./claude/promptscout",
+      "description": "Check your brand's AI visibility, act on Opportunities and draft content briefs with your PromptScout account."
+    }
+  ]
+}
