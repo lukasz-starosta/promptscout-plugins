@@ -3,6 +3,10 @@
     "promptscout": {
       "type": "http",
       "url": "https://mcp.promptscout.app/mcp"
+    },
+    "promptscout-website-audit": {
+      "type": "http",
+      "url": "https://check.promptscout.app/mcp"
     }
   }
 }
