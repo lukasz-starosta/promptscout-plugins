@@ -2,9 +2,12 @@
 
 This folder is evidence for the founder's decision and is not part of the plugin.
 
-- [transcript.md](transcript.md): four recorded Claude Code runs on this branch with no
-  PromptScout account. `/promptscout:checking-website-readiness` on example.com and iana.org
-  returns a full report with no sign-in prompt.
+- [transcript.md](transcript.md): six recorded Claude Code runs on this branch with no
+  PromptScout account, on 2026-11-12 between 17:59 and 18:03 UTC.
+  `/promptscout:checking-website-readiness` on example.com and iana.org returns a full report
+  with no sign-in prompt, and a check of a domain that does not resolve reports its failure
+  plainly. It also lists the PostHog events the orchestrator observed for those runs, and the
+  two known gaps.
 - [existing-skills.md](existing-skills.md): the three account skills are byte-identical to main,
   and `/promptscout:checking-ai-visibility` without an account gives the same sign-in steps on
   main and on this branch.
