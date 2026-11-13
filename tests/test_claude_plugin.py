@@ -12,13 +12,38 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PLUGIN = ROOT / "claude" / "promptscout"
 SKILLS = PLUGIN / "skills"
-SKILL_NAMES = ["checking-ai-visibility", "acting-on-opportunities", "drafting-content-briefs"]
+# Skills that use the PromptScout account server (sign-in needed).
+ACCOUNT_SKILLS = ["checking-ai-visibility", "acting-on-opportunities", "drafting-content-briefs"]
+# Skills that use the public website audit server (no account, no sign-in).
+AUDIT_SKILLS = ["checking-website-readiness", "aeo-geo-evidence-guide"]
+SKILL_NAMES = ACCOUNT_SKILLS + AUDIT_SKILLS
 
 MCP_URL = "https://mcp.promptscout.app/mcp"
 TOOL_PREFIX = "mcp__plugin_promptscout_promptscout__"
+AUDIT_SERVER = "promptscout-website-audit"
+AUDIT_URL = "https://check.promptscout.app/mcp"
+AUDIT_PREFIX = f"mcp__plugin_promptscout_{AUDIT_SERVER}__"
+
+# Tools of the public website audit MCP server (tools/list on check.promptscout.app, 2026-11-11).
+AUDIT_TOOLS = {
+    "promptscout_start_website_audit",
+    "promptscout_get_website_audit",
+    "promptscout_get_aeo_geo_guidance",
+}
+
+# The one plan rule both READMEs state (founder decision D-330, 2026-11-11).
+PLAN_RULE = (
+    "Any PromptScout account with a brand can connect, on any plan. Free gets part of the visibility "
+    "data, Starter gets all of it, and Growth and higher also get Opportunities and content briefs."
+)
+
+# The one free-check pointer, allowed only in the website check skill.
+FREE_CHECK_URL = (
+    "https://www.promptscout.app/get-started?utm_source=claude-plugin&utm_medium=skill&utm_campaign=claude-plugin"
+)
 
 # Tools of the PromptScout account MCP server (task SL-1428).
-KNOWN_TOOLS = {
+ACCOUNT_TOOLS = {
     "promptscout_list_brands",
     "promptscout_get_brand_setup_status",
     "promptscout_read_share_of_voice",
@@ -39,6 +64,7 @@ KNOWN_TOOLS = {
     "promptscout_get_content_brief",
     "promptscout_generate_content_brief",
 }
+KNOWN_TOOLS = ACCOUNT_TOOLS | AUDIT_TOOLS
 # Wording that gates a write on the user's explicit yes.
 CONFIRMATION_GATE = re.compile(r"only after the (user's next message clearly confirms|explicit confirmation)")
 
@@ -81,6 +107,10 @@ def tool_names(text):
 
 def read(path):
     return path.read_text(encoding="utf-8")
+
+
+def prose(text):
+    return " ".join(text.split())
 
 
 def skill_text(name):
@@ -135,15 +165,15 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(data["license"], "MIT")
         self.assertTrue((PLUGIN / data["icon"]).is_file(), "icon file missing")
 
-    def test_mcp_server_is_account_server_only(self):
+    def test_mcp_servers_are_account_and_website_audit(self):
         data = json.loads(read(PLUGIN / ".mcp.json"))
-        self.assertEqual(list(data["mcpServers"]), ["promptscout"])
-        server = data["mcpServers"]["promptscout"]
-        self.assertEqual(server, {"type": "http", "url": MCP_URL})
-
-    def test_no_website_audit_server(self):
-        for path in published_files():
-            self.assertNotIn("check.promptscout.app", read(path), path)
+        self.assertEqual(
+            data["mcpServers"],
+            {
+                "promptscout": {"type": "http", "url": MCP_URL},
+                AUDIT_SERVER: {"type": "http", "url": AUDIT_URL},
+            },
+        )
 
     def test_marketplace_lists_plugin(self):
         data = json.loads(read(ROOT / ".claude-plugin" / "marketplace.json"))
@@ -156,7 +186,7 @@ class ManifestTests(unittest.TestCase):
 
 
 class SkillTests(unittest.TestCase):
-    def test_exactly_three_skills(self):
+    def test_exactly_five_skills(self):
         found = sorted(p.name for p in SKILLS.iterdir() if (p / "SKILL.md").is_file())
         self.assertEqual(found, sorted(SKILL_NAMES))
 
@@ -168,22 +198,33 @@ class SkillTests(unittest.TestCase):
             self.assertTrue(fields.get("description"), name)
 
     def test_every_tool_name_exists(self):
-        for name in SKILL_NAMES:
-            text = skill_text(name)
-            mentioned = tool_names(text)
-            self.assertGreaterEqual(len(mentioned), 3, name)
-            unknown = mentioned - KNOWN_TOOLS
-            self.assertFalse(unknown, f"{name} mentions unknown tools: {unknown}")
+        groups = [(ACCOUNT_SKILLS, ACCOUNT_TOOLS, 3), (AUDIT_SKILLS, AUDIT_TOOLS, 1)]
+        for names, tools, minimum in groups:
+            for name in names:
+                mentioned = tool_names(skill_text(name))
+                self.assertGreaterEqual(len(mentioned), minimum, name)
+                unknown = mentioned - tools
+                self.assertFalse(unknown, f"{name} mentions tools of another server: {unknown}")
 
     def test_full_tool_names_use_plugin_prefix(self):
-        for name in SKILL_NAMES:
-            text = skill_text(name)
-            for full in re.findall(r"mcp__[A-Za-z0-9_-]+__[a-z_]+", text):
-                self.assertTrue(full.startswith(TOOL_PREFIX), f"{name}: {full}")
-            # Every tool call in a table row is a full plugin tool name.
-            for row in re.findall(r"(?m)^\|.*`[^`]*promptscout_[a-z_]+`.*\|$", text):
-                for code in re.findall(r"`([^`]*promptscout_[a-z_]+)`", row):
-                    self.assertTrue(code.startswith(TOOL_PREFIX), f"{name}: {code}")
+        groups = [(ACCOUNT_SKILLS, TOOL_PREFIX), (AUDIT_SKILLS, AUDIT_PREFIX)]
+        for names, prefix in groups:
+            for name in names:
+                text = skill_text(name)
+                for full in re.findall(r"mcp__[A-Za-z0-9_-]+__[a-z_]+", text):
+                    self.assertTrue(full.startswith(prefix), f"{name}: {full}")
+                # Every tool call in a table row is a full plugin tool name.
+                for row in re.findall(r"(?m)^\|.*`[^`]*promptscout_[a-z_]+`.*\|$", text):
+                    for code in re.findall(r"`([^`]*promptscout_[a-z_]+)`", row):
+                        self.assertTrue(code.startswith(prefix), f"{name}: {code}")
+
+    def test_website_audit_skills_need_no_sign_in(self):
+        for name in AUDIT_SKILLS:
+            text = prose(skill_text(name))
+            self.assertIn("needs no PromptScout account and no sign-in", text, name)
+            self.assertIn("do not ask the user to sign in", text.lower(), name)
+            self.assertNotIn("plugin:promptscout:promptscout`", text, name)
+            self.assertNotIn(MCP_URL, text, name)
 
     def test_writes_are_gated_on_confirmation(self):
         gate = CONFIRMATION_GATE
@@ -212,6 +253,8 @@ class SkillTests(unittest.TestCase):
             },
             "drafting-content-briefs": {"promptscout_generate_content_brief"},
             "checking-ai-visibility": set(),
+            "checking-website-readiness": set(),
+            "aeo-geo-evidence-guide": set(),
         }
         for name, tools in expected.items():
             text = skill_text(name)
@@ -230,9 +273,24 @@ class SkillTests(unittest.TestCase):
 
 class PublishedTextTests(unittest.TestCase):
     def test_no_pricing_or_schedule_words(self):
+        # The READMEs may state the one plan rule and nothing else about plans.
         for path in user_facing_files():
-            hits = FORBIDDEN_WORDS.findall(read(path))
+            text = prose(read(path)).replace(PLAN_RULE, "")
+            hits = FORBIDDEN_WORDS.findall(text)
             self.assertFalse(hits, f"{path.relative_to(ROOT)}: {hits}")
+
+    def test_readmes_state_the_plan_rule(self):
+        for path in (ROOT / "README.md", PLUGIN / "README.md"):
+            text = prose(read(path))
+            self.assertEqual(text.count(PLAN_RULE), 1, path)
+            self.assertNotRegex(text, r"(?i)growth and higher[^.]*beta", path)
+
+    def test_one_free_check_pointer(self):
+        # Only the website check skill points to the free check, once; no other file does.
+        for path in user_facing_files():
+            expected = 1 if path == SKILLS / "checking-website-readiness" / "SKILL.md" else 0
+            self.assertEqual(read(path).count("https://www.promptscout.app/get-started"), expected, path)
+            self.assertEqual(read(path).count(FREE_CHECK_URL), expected, path)
 
     def test_no_secrets_or_personal_data(self):
         for path in published_files():
@@ -253,6 +311,8 @@ class PublishedTextTests(unittest.TestCase):
             "Customize > Plugins",
             "Add marketplace",
             MCP_URL,
+            AUDIT_URL,
+            "/promptscout:checking-website-readiness",
             "PromptScout account",
             "sign in",
             "Reads",
@@ -264,13 +324,15 @@ class PublishedTextTests(unittest.TestCase):
     def test_promptscout_links_are_tagged_for_counting(self):
         # Visits from the plugin's README and skill links are counted in PostHog by utm_source.
         tagged = re.compile(
-            r"https://www\.promptscout\.app/(contact)?\?utm_source=claude-plugin"
+            r"https://www\.promptscout\.app/(contact|get-started)?\?utm_source=claude-plugin"
             r"&utm_medium=(github-readme|plugin-readme|skill)&utm_campaign=claude-plugin"
         )
         files = {
             ROOT / "README.md": 3,
             PLUGIN / "README.md": 3,
             SKILLS / "checking-ai-visibility" / "SKILL.md": 1,
+            SKILLS / "checking-website-readiness" / "SKILL.md": 1,
+            SKILLS / "aeo-geo-evidence-guide" / "SKILL.md": 0,
         }
         for path, expected in files.items():
             text = read(path)
