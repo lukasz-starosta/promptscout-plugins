@@ -24,6 +24,21 @@ AUDIT_SERVER = "promptscout-website-audit"
 AUDIT_URL = "https://check.promptscout.app/mcp"
 AUDIT_PREFIX = f"mcp__plugin_promptscout_{AUDIT_SERVER}__"
 
+# The plugin's directory listing text (task SL-1605): the free check first, account features second.
+LISTING_DESCRIPTION = (
+    "Free website check for AI search readiness, no account needed. With a PromptScout account, "
+    "check your brand's AI visibility, act on Opportunities and draft content briefs."
+)
+# The 0.2.0 listing text, which read as if every skill needed an account.
+OLD_DESCRIPTION = (
+    "Check your brand's AI visibility, act on Opportunities and draft content briefs "
+    "with your PromptScout account."
+)
+KEYWORDS = [
+    "promptscout", "ai-visibility", "share-of-voice", "seo", "content-briefs", "geo",
+    "aeo", "website-audit",
+]
+
 # Tools of the public website audit MCP server (tools/list on check.promptscout.app, 2026-11-11).
 AUDIT_TOOLS = {
     "promptscout_start_website_audit",
@@ -183,6 +198,31 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(entry["name"], "promptscout")
         self.assertEqual(entry["source"], "./claude/promptscout")
         self.assertTrue((ROOT / entry["source"] / ".claude-plugin" / "plugin.json").is_file())
+
+    def test_listing_leads_with_the_free_website_check(self):
+        # The directory listing shows plugin.json's description: free check first, account second.
+        plugin = json.loads(read(PLUGIN / ".claude-plugin" / "plugin.json"))
+        self.assertEqual(plugin["description"], LISTING_DESCRIPTION)
+        text = plugin["description"]
+        self.assertLess(text.index("no account needed"), text.index("With a PromptScout account"))
+        self.assertFalse(FORBIDDEN_WORDS.findall(text), text)
+
+    def test_marketplace_matches_plugin_manifest(self):
+        plugin = json.loads(read(PLUGIN / ".claude-plugin" / "plugin.json"))
+        market = json.loads(read(ROOT / ".claude-plugin" / "marketplace.json"))
+        entry = market["plugins"][0]
+        self.assertEqual(entry["description"], plugin["description"])
+        # The version lives in plugin.json only; an entry version would need to match it.
+        self.assertEqual(entry.get("version", plugin["version"]), plugin["version"])
+        self.assertIn("free website check", market["description"])
+        for path in (ROOT / ".claude-plugin" / "marketplace.json", PLUGIN / ".claude-plugin" / "plugin.json"):
+            self.assertNotIn(OLD_DESCRIPTION, read(path), path)
+            self.assertNotIn("with your PromptScout account", read(path), path)
+
+    def test_version_and_keywords(self):
+        plugin = json.loads(read(PLUGIN / ".claude-plugin" / "plugin.json"))
+        self.assertEqual(plugin["version"], "0.2.1")
+        self.assertEqual(plugin["keywords"], KEYWORDS)
 
 
 class SkillTests(unittest.TestCase):

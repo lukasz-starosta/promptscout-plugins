@@ -1,0 +1,12 @@
+[
+  {
+    "path": "Claude Code /plugin > Discover, search \"promptscout\" (the plugin's row in the plugin list; before = main, after = this branch)",
+    "live_url": "https://github.com/lukasz-starosta/promptscout-plugins",
+    "behind_login": false
+  },
+  {
+    "path": "Claude Code /plugin > Discover > PromptScout (plugin details before install; before = main, after = this branch)",
+    "live_url": "https://github.com/lukasz-starosta/promptscout-plugins",
+    "behind_login": false
+  }
+]
