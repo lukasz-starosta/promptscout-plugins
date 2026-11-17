@@ -1,8 +1,8 @@
 {
   "name": "promptscout",
   "displayName": "PromptScout",
-  "version": "0.2.0",
-  "description": "Check your brand's AI visibility, act on Opportunities and draft content briefs with your PromptScout account.",
+  "version": "0.2.1",
+  "description": "Free website check for AI search readiness, no account needed. With a PromptScout account, check your brand's AI visibility, act on Opportunities and draft content briefs.",
   "author": {
     "name": "PromptScout",
     "url": "https://www.promptscout.app"
@@ -16,7 +16,9 @@
     "share-of-voice",
     "seo",
     "content-briefs",
-    "geo"
+    "geo",
+    "aeo",
+    "website-audit"
   ],
   "icon": "./assets/icon.png",
   "supportUrl": "https://www.promptscout.app/contact",
